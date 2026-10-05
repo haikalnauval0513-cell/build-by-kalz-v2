@@ -1,0 +1,97 @@
+name: BUILD BY KALZ - Flutter APK Builder
+
+on:
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: 'Job ID'
+        required: true
+      app_name:
+        description: 'Nama APK'
+        required: false
+        default: 'MyApp'
+      package_name:
+        description: 'Package Name'
+        required: false
+        default: 'com.example.app'
+      build_mode:
+        description: 'Mode Build'
+        required: false
+        default: 'release'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+      - run: echo "Delay 60s..." && sleep 60
+      - run: flutter pub get
+      - run: echo "Delay 60s..." && sleep 60
+      - run: flutter build apk --${{ github.event.inputs.build_mode }}
+      - run: echo "Delay 60s..." && sleep 60
+      - run: |
+          mkdir -p output
+          cp build/app/outputs/flutter-apk/app-*.apk output/app.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk-${{ github.event.inputs.job_id }}
+          path: output/*.apk
+          retention-days: 1name: BUILD BY KALZ - Flutter APK Builder
+
+on:
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: 'Job ID'
+        required: true
+      app_name:
+        description: 'Nama APK'
+        required: false
+        default: 'MyApp'
+      package_name:
+        description: 'Package Name'
+        required: false
+        default: 'com.example.app'
+      build_mode:
+        description: 'Mode Build'
+        required: false
+        default: 'release'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+      - run: echo "Delay 60s..." && sleep 60
+      - run: flutter pub get
+      - run: echo "Delay 60s..." && sleep 60
+      - run: flutter build apk --${{ github.event.inputs.build_mode }}
+      - run: echo "Delay 60s..." && sleep 60
+      - run: |
+          mkdir -p output
+          cp build/app/outputs/flutter-apk/app-*.apk output/app.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk-${{ github.event.inputs.job_id }}
+          path: output/*.apk
+          retention-days: 1
